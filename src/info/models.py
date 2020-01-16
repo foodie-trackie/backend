@@ -9,16 +9,7 @@ class Item(models.Model):
     production_date = models.DateField()
     shelf_life = models.IntegerField()
     expiration_date = models.DateField()
-    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
-
-class User(models.Model):
-    name = models.CharField(max_length=120)
-    email = models.CharField(max_length=120)
-    password = models.CharField(max_length=120)
+    owner = models.ForeignKey('auth.User', related_name='items', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

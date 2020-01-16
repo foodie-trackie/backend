@@ -1,6 +1,7 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from info.models import Item, User
+from info.models import Item
+from django.contrib.auth.models import User
 from .serializers import ItemSerializer, UserSerializer
 
 
@@ -8,8 +9,8 @@ class UserItemListView(ListAPIView):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
-        user_id = self.kwargs['user_id']
-        return Item.objects.filter(user_id=user_id)
+        owner = self.kwargs['owner']
+        return Item.objects.filter(owner=owner)
 
 
 class ItemDetailView(RetrieveAPIView):
