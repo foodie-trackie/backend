@@ -11,6 +11,8 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     items = serializers.PrimaryKeyRelatedField(many=True, queryset=Item.objects.all())
+
     class Meta:
         model = User
         fields = ['id', 'username', 'items']
+        
