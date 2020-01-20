@@ -1,5 +1,7 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 from info.models import Item
 from .forms import SignUpForm
 from django.contrib.auth.models import User
@@ -30,16 +32,17 @@ class UserDetailView(RetrieveAPIView):
     serializer_class = UserSerializer
 
 
+# @api_view(['GET', 'POST'])
 def signup_view(request):
-    form = SignUpForm(request.POST)
-    if form.is_valid():
-        form.save()
-    username = form.cleaned_data.get('username')
-    password = form.cleaned_data.get('password1')
-    print(username)
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    user = authenticate(username=username, password=password)
-    login(request, user)
+    # user = authenticate(username=username, password=password)
+    # login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
 
 # class CreateUserView(CreateAPIView):
