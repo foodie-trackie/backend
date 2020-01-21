@@ -1,12 +1,13 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.decorators import api_view
 from info.models import Item
 from .forms import SignUpForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
+from django.http import HttpResponse
 from .serializers import ItemSerializer, UserSerializer
+import json
+
 
 
 class UserItemListView(ListCreateAPIView):
@@ -34,17 +35,13 @@ class UserDetailView(RetrieveAPIView):
 
 # @api_view(['GET', 'POST'])
 def signup_view(request):
+    data = json.loads(request.body.decode('utf-8'))
+    print(json.loads(request.body.decode('utf-8')))
     if request.method == 'POST':
-        serializer = UserSerializer(data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        form = SignUpForm(data)
+        print(form.errors)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(status=201)
+        return HttpResponse(form.errors.as_json(), status=400)
 
-    # user = authenticate(username=username, password=password)
-    # login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-
-# class CreateUserView(CreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer

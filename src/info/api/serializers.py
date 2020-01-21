@@ -10,11 +10,10 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    items = serializers.PrimaryKeyRelatedField(many=True, queryset=Item.objects.all())
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'items')
+        fields = ('id', 'username', 'email', 'password')
         write_only_fields = ('password')  # To makesure passwords are not displayed
 
     def create(self, validated_data):
@@ -22,8 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email']
         )
-        
+        print(validated_data)
         user.set_password(validated_data['password'])  # To generate a hash for the password
         user.save()
-        print(user + "yes")
         return user
