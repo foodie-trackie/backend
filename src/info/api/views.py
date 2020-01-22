@@ -9,7 +9,6 @@ from .serializers import ItemSerializer, UserSerializer
 import json
 
 
-
 class UserItemListView(ListCreateAPIView):
     serializer_class = ItemSerializer
 
@@ -33,10 +32,9 @@ class UserDetailView(RetrieveAPIView):
     serializer_class = UserSerializer
 
 
-# @api_view(['GET', 'POST'])
 def signup_view(request):
     data = json.loads(request.body.decode('utf-8'))
-    print(json.loads(request.body.decode('utf-8')))
+    print(data)
     if request.method == 'POST':
         form = SignUpForm(data)
         print(form.errors)
@@ -45,3 +43,15 @@ def signup_view(request):
             return HttpResponse(status=201)
         return HttpResponse(form.errors.as_json(), status=400)
 
+
+def login_view(request):
+    data = json.loads(request.body.decode('utf-8'))
+    if request.method == 'POST':
+        username = data['username']
+        password = data['password']
+        user = authenticate(username=username, password=password)
+        userData = UserSerializer(user).data
+        if user is not None:
+            login(request, user)
+            return HttpResponse(json.dumps({'username': userData['username'], 'email': userData['email']}), status=200)
+        return HttpResponse(status=404)
