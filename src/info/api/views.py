@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import api_view
 from info.models import Item
 from .forms import SignUpForm
@@ -17,7 +17,7 @@ class UserItemListView(ListCreateAPIView):
         return Item.objects.filter(owner=owner)
 
 
-class ItemDetailView(RetrieveAPIView):
+class ItemDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
@@ -53,5 +53,5 @@ def login_view(request):
         userData = UserSerializer(user).data
         if user is not None:
             login(request, user)
-            return HttpResponse(json.dumps({'username': userData['username'], 'email': userData['email']}), status=200)
+            return HttpResponse(json.dumps({'id': userData['id'], 'username': userData['username'], 'email': userData['email']}), status=200)
         return HttpResponse(status=404)
