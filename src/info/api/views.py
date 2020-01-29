@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import api_view
 from info.models import Item
 from .forms import SignUpForm
@@ -9,18 +9,20 @@ from .serializers import ItemSerializer, UserSerializer
 import json
 
 
-class UserItemListView(ListCreateAPIView):
+class UserItemListView(ListAPIView):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
         owner = self.kwargs['owner']
         return Item.objects.filter(owner=owner)
 
-
 class ItemDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
+class ItemCreateView(CreateAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
 
 class UserListCreateView(ListCreateAPIView):
     queryset = User.objects.all()
